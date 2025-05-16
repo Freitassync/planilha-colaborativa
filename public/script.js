@@ -1,70 +1,66 @@
-const socket = io(); // Conecta ao servidor WebSocket
-
-const table = document.getElementById("table");
+const socket = io();
 const fileInput = document.getElementById("fileInput");
+const saveBtn = document.getElementById("saveBtn");
+const tableContainer = document.getElementById("tableContainer");
+
+let tableRef = null;
 
 // Carrega o Excel
 fileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
+  if (!file) return;
+
   const reader = new FileReader();
-
-  reader.onload = (e) => {
-    const data = new Uint8Array(e.target.result);
+  reader.onload = (event) => {
+    const data = new Uint8Array(event.target.result);
     const workbook = XLSX.read(data, { type: "array" });
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const html = XLSX.utils.sheet_to_html(sheet);
-    table.innerHTML = html;
 
-    makeCellsEditable();
+    tableContainer.innerHTML = html;
+    tableRef = document.querySelector("table");
+    makeEditable(tableRef);
   };
 
   reader.readAsArrayBuffer(file);
 });
 
-// Torna as células editáveis e emite eventos via socket
-function makeCellsEditable() {
-  const cells = document.querySelectorAll("table td");
-  cells.forEach((cell) => {
-    cell.setAttribute("contenteditable", "true");
+function makeEditable(table) {
+  const cells = table.querySelectorAll("td");
+  cells.forEach((cell, index) => {
+    cell.contentEditable = "true";
+
+    const row = cell.parentNode.rowIndex;
+    const col = cell.cellIndex;
 
     cell.addEventListener("input", () => {
-      const row = cell.parentNode.rowIndex;
-      const col = cell.cellIndex;
       const value = cell.innerText;
-
-      // Envia para o servidor
       socket.emit("cell-update", { row, col, value });
     });
   });
 }
 
-// Quando receber atualização de outro usuário:
+// Recebe alteração dos outros usuários
 socket.on("cell-update", ({ row, col, value }) => {
-  const rowElement = document.querySelectorAll("table tr")[row];
-  if (rowElement) {
-    const cell = rowElement.children[col];
+  const rows = document.querySelectorAll("table tr");
+  if (rows[row]) {
+    const cell = rows[row].children[col];
     if (cell) {
       cell.innerText = value;
     }
   }
 });
 
-document.getElementById("saveBtn").addEventListener("click", () => {
-  const tableEl = document.querySelector("table");
-  if (!tableEl) {
-    alert("Nenhuma planilha carregada!");
+// Exportar como Excel
+saveBtn.addEventListener("click", () => {
+  if (!tableRef) {
+    alert("Carregue uma planilha primeiro.");
     return;
   }
 
-  // Converte tabela HTML para worksheet
-  const worksheet = XLSX.utils.table_to_sheet(tableEl);
+  const ws = XLSX.utils.table_to_sheet(tableRef);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Planilha");
 
-  // Cria novo workbook e adiciona a worksheet
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Planilha");
-
-  // Exporta como arquivo .xlsx
-  XLSX.writeFile(workbook, "planilha_editada.xlsx");
+  XLSX.writeFile(wb, "planilha_editada.xlsx");
 });
-

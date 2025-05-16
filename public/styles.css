@@ -1,0 +1,21 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+#spreadsheetContainer table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#spreadsheetContainer th,
+#spreadsheetContainer td {
+  border: 1px solid #ccc;
+  padding: 5px;
+  min-width: 100px;
+  text-align: left;
+}
+
+td[contenteditable="true"] {
+  background-color: #fdfdfd;
+}

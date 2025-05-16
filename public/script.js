@@ -49,3 +49,22 @@ socket.on("cell-update", ({ row, col, value }) => {
     }
   }
 });
+
+document.getElementById("saveBtn").addEventListener("click", () => {
+  const tableEl = document.querySelector("table");
+  if (!tableEl) {
+    alert("Nenhuma planilha carregada!");
+    return;
+  }
+
+  // Converte tabela HTML para worksheet
+  const worksheet = XLSX.utils.table_to_sheet(tableEl);
+
+  // Cria novo workbook e adiciona a worksheet
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Planilha");
+
+  // Exporta como arquivo .xlsx
+  XLSX.writeFile(workbook, "planilha_editada.xlsx");
+});
+

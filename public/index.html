@@ -1,25 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <title>Planilha colaborativa</title>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <meta charset="UTF-8" />
+  <title>Planilha Online</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js" defer></script>
   <style>
     table, td, th {
-      border: 1px solid black;
+      border: 1px solid #000;
       border-collapse: collapse;
-      padding: 5px;
+      padding: 6px;
     }
     td[contenteditable="true"] {
-      background: #ffffcc;
+      background-color: #ffffcc;
     }
   </style>
 </head>
 <body>
-  <h1>Editor de Planilha em Tempo Real</h1>
-  <input type="file" id="fileInput" />
+  <h1>Planilha Online Colaborativa</h1>
+  <input type="file" id="fileInput" accept=".xlsx" />
   <button id="saveBtn">Salvar como Excel</button>
-  <div id="table"></div>
-  <script src="script.js"></script>
+  <div id="tableContainer"></div>
 </body>
 </html>

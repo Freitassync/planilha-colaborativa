@@ -1,21 +1,78 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
+* {
+  box-sizing: border-box;
 }
 
-#spreadsheetContainer table {
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+}
+
+.toolbar {
+  background: #ffffff;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toolbar h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #2d6a4f;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+button,
+.file-label {
+  background-color: #2d6a4f;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+button:hover,
+.file-label:hover {
+  background-color: #1b4332;
+}
+
+#tableContainer {
+  padding: 20px;
+  overflow-x: auto;
+}
+
+table {
   border-collapse: collapse;
   width: 100%;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-#spreadsheetContainer th,
-#spreadsheetContainer td {
+th,
+td {
   border: 1px solid #ccc;
-  padding: 5px;
+  padding: 8px;
   min-width: 100px;
   text-align: left;
+  font-size: 14px;
 }
 
 td[contenteditable="true"] {
-  background-color: #fdfdfd;
+  background-color: #e9f5ec;
+}
+
+td:focus {
+  outline: 2px solid #40916c;
+  background-color: #d8f3dc;
 }
